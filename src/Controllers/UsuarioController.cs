@@ -2,11 +2,73 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using apiPrueba.src.Modelo;
+using apiPrueba.src.Data; // Ensure this is the correct namespace for ApplicacionDBContext
 
 namespace apiPrueba.src.Controllers
 {
-    public class UsuarioController
+    [Route("api/usuario")]
+    [ApiController]
+    public class UsuarioController : ControllerBase
     {
+        private readonly ApplicacionDBController _context; // Corrected spelling
+        
+        public UsuarioController(ApplicacionDBController context)
+        {
+            _context = context;
+        }
+
+        [HttpGet]
+        public IActionResult Get(){
+            var usuario = _context.usuario.ToList();
+            return Ok(usuario);
+        }
+        [HttpGet("{id}")]
+        public IActionResult GetId(int id){
+            var usuario = _context.usuario.FirstOrDefault(x => x.Id == id);
+            if(usuario == null){
+                return NotFound();
+            }
+            return Ok(usuario);
+        }
+        [HttpPost]
+        public IActionResult Post([FromBody] Usuario usuario){
+            if(ModelState.IsValid){
+                _context.usuario.Add(usuario);
+                _context.SaveChanges();
+                return Ok();
+            }
+            return BadRequest();
+        }
+        [HttpPut("{id}")]
+        public IActionResult Put([FromRoute]int id, [FromBody] Usuario usuario){
+            var usuarioDB = _context.usuario.Find(id);
+            if(usuarioDB == null){
+                return NotFound();
+            }
+            var userToUpdate = _context.usuario.FirstOrDefault(x => x.Id == id);
+            if(userToUpdate == null){
+                return NotFound();
+            }
+            userToUpdate.Nombre = usuario.Nombre;
+            userToUpdate.RUT = usuario.RUT;
+            userToUpdate.email = usuario.email;
+            userToUpdate.genero = usuario.genero;
+            _context.usuario.Update(userToUpdate);
+            _context.SaveChanges();
+            return Ok(userToUpdate);
+        }
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id){
+            var usuario = _context.usuario.FirstOrDefault(x=> x.Id == id);
+            if(usuario == null){
+                return NotFound();
+            }
+            _context.usuario.Remove(usuario);
+            _context.SaveChanges();
+            return Ok();
+        }
         
     }
 }
