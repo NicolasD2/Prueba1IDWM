@@ -10,7 +10,7 @@ using apiPrueba.src.Data;
 namespace apiPrueba.src.Data.Migrations
 {
     [DbContext(typeof(ApplicacionDBContext))]
-    [Migration("20241003013513_addSeeders")]
+    [Migration("20241003025148_addSeeders")]
     partial class addSeeders
     {
         /// <inheritdoc />

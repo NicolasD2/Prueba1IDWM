@@ -23,7 +23,7 @@ namespace apiPrueba.src.Data
                         .RuleFor(u => u.Nombre, f => f.Person.FullName)
                         .RuleFor(u => u.RUT, f => int.Parse(GenerateRut(f, existingRuts)))
                         .RuleFor(u => u.email, f => f.Person.Email)
-                        .RuleFor(u => u.genero, f => f.PickRandom("M", "F"))
+                        .RuleFor(u => u.genero, f => f.PickRandom("maculino", "femenino", "otro", "prefiero no decirlo"))
                         .RuleFor(u => u.fechaNacimiento, f => f.Person.DateOfBirth.ToString("yyyy-MM-dd"));
 
                     var users = userFaker.Generate(10);
