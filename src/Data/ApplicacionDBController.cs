@@ -7,9 +7,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace apiPrueba.src.Data
 {
-    public class ApplicacionDBController(DbContextOptions dbContextOptions) : DbContext(dbContextOptions)
+    public class ApplicacionDBContext : DbContext 
     {
-        public DbSet<Usuario> usuarios { get; set; }
+        public ApplicacionDBContext(DbContextOptions<ApplicacionDBContext> options) : base(options) // Asegurando que el constructor esté correcto
+        {
+        }
 
+        public DbSet<Usuario> usuarios { get; set; }
     }
 }

@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using apiPrueba.src.Modelo; // Add this line to include the correct namespace for ApplicacionDBContext
+using apiPrueba.src.Modelo;
 using Bogus;
-
 
 namespace apiPrueba.src.Data
 {
@@ -15,8 +14,9 @@ namespace apiPrueba.src.Data
             using (var scope = serviceProvider.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<ApplicacionDBController>();
+                var context = services.GetRequiredService<ApplicacionDBContext>(); // Cambiado a Context
                 var existingRuts = new HashSet<string>();
+
                 if (!context.usuarios.Any())
                 {
                     var userFaker = new Faker<Usuario>()
@@ -25,12 +25,14 @@ namespace apiPrueba.src.Data
                         .RuleFor(u => u.email, f => f.Person.Email)
                         .RuleFor(u => u.genero, f => f.PickRandom("M", "F"))
                         .RuleFor(u => u.fechaNacimiento, f => f.Person.DateOfBirth.ToString("yyyy-MM-dd"));
+
                     var users = userFaker.Generate(10);
                     context.usuarios.AddRange(users);
                     context.SaveChanges();
                 }
             }
         }
+
         private static string GenerateRut(Faker faker, HashSet<string> existingRuts)
         {
             string rut;

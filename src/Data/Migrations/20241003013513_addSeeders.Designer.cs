@@ -9,8 +9,8 @@ using apiPrueba.src.Data;
 
 namespace apiPrueba.src.Data.Migrations
 {
-    [DbContext(typeof(ApplicacionDBController))]
-    [Migration("20241003000949_addSeeders")]
+    [DbContext(typeof(ApplicacionDBContext))]
+    [Migration("20241003013513_addSeeders")]
     partial class addSeeders
     {
         /// <inheritdoc />
@@ -46,7 +46,7 @@ namespace apiPrueba.src.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("usuario");
+                    b.ToTable("usuarios");
                 });
 #pragma warning restore 612, 618
         }
