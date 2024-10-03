@@ -173,6 +173,7 @@ public IActionResult UpdateUser(int id, [FromBody] Usuario usuario)
             }
             _context.usuarios.Remove(usuario);
             _context.SaveChanges();
+            
             return Ok();
         }
     }
