@@ -9,9 +9,7 @@ namespace apiPrueba.src.Data
 {
     public class ApplicacionDBContext : DbContext 
     {
-        public ApplicacionDBContext(DbContextOptions<ApplicacionDBContext> options) : base(options) // Asegurando que el constructor esté correcto
-        {
-        }
+        public ApplicacionDBContext(DbContextOptions<ApplicacionDBContext> options) : base(options){}
 
         public DbSet<Usuario> usuarios { get; set; }
     }

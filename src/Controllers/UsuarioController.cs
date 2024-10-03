@@ -12,7 +12,7 @@ namespace apiPrueba.src.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly ApplicacionDBContext _context; // Cambiado de Controller a Context
+        private readonly ApplicacionDBContext _context; 
         
         public UsuarioController(ApplicacionDBContext context)
         {
@@ -20,10 +20,28 @@ namespace apiPrueba.src.Controllers
         }
 
         [HttpGet]
-        public IActionResult Get(){
-            var usuarios = _context.usuarios.ToList();
-            return Ok(usuarios);
+        public IActionResult Get([FromQuery] string? gender)
+        {
+               
+                var generosValidos = new List<string> { "masculino", "femenino", "otro", "prefiero no decirlo" };
+                if (!string.IsNullOrEmpty(gender) && !generosValidos.Contains(gender.ToLower()))
+                {
+                        return BadRequest("El parámetro 'gender' no corresponde a 'masculino', 'femenino', 'otro' o 'prefiero no decirlo'.");
+                }
+
+                
+                var usuarios = _context.usuarios.AsQueryable();
+
+                
+                if (!string.IsNullOrEmpty(gender))
+                {
+                        usuarios = usuarios.Where(u => u.genero.ToLower() == gender.ToLower());
+                }
+
+                
+                return Ok(usuarios.ToList());
         }
+
 
         [HttpGet("{id}")]
         public IActionResult GetId(int id){
@@ -95,20 +113,57 @@ namespace apiPrueba.src.Controllers
         }
 
 
-        [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] Usuario usuario){
-            var usuarioDB = _context.usuarios.Find(id);
-            if (usuarioDB == null){
-                return NotFound();
-            }
-            usuarioDB.Nombre = usuario.Nombre;
-            usuarioDB.RUT = usuario.RUT;
-            usuarioDB.email = usuario.email;
-            usuarioDB.genero = usuario.genero;
-            _context.usuarios.Update(usuarioDB);
-            _context.SaveChanges();
-            return Ok(usuarioDB);
+[HttpPut("{id}")]
+public IActionResult UpdateUser(int id, [FromBody] Usuario usuario)
+{
+        
+        var usuarioDB = _context.usuarios.Find(id);
+        if (usuarioDB == null)
+        {
+                return NotFound("Usuario no encontrado.");
         }
+
+        if ( usuario.Nombre.Length < 3 || usuario.Nombre.Length > 100)
+        {
+                return BadRequest("El nombre debe ser mayor a 3 y menor que 100 caracteres.");
+        }
+
+        if (string.IsNullOrEmpty(usuario.email) || !usuario.email.Contains("@"))
+        {
+                return BadRequest("El correo electrónico debe ser válido.");
+        }
+
+        var generosValidos = new List<string> { "masculino", "femenino", "otro", "prefiero no decirlo" };
+
+        if (!generosValidos.Contains(usuario.genero.ToLower()))
+        {
+                return BadRequest("El género debe ser 'masculino', 'femenino', 'otro' o 'prefiero no decirlo'.");
+        }
+
+        if (DateTime.TryParse(usuario.fechaNacimiento, out DateTime fechaNacimiento))
+        {
+                if (fechaNacimiento >= DateTime.Today)
+                {
+                        return BadRequest("La fecha de nacimiento debe ser menor a la fecha actual.");
+                }
+        }
+        else
+        {
+                return BadRequest("La fecha de nacimiento es inválida.");
+        }
+
+        
+        usuarioDB.Nombre = usuario.Nombre;
+        usuarioDB.RUT = usuario.RUT;
+        usuarioDB.email = usuario.email;
+        usuarioDB.genero = usuario.genero;
+        usuarioDB.fechaNacimiento = usuario.fechaNacimiento; 
+        _context.usuarios.Update(usuarioDB);
+        _context.SaveChanges();
+
+        return Ok(usuarioDB);
+}
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(int id){
