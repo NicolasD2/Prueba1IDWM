@@ -10,7 +10,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<ApplicacionDBController>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+string connectionString = Environment.GetEnvironmentVariable("DATABASE_URL") ?? "Data Source=app.db";
+builder.Services.AddDbContext<ApplicacionDBController>(opt => opt.UseSqlite(connectionString));
 
 var app = builder.Build();
 
@@ -21,7 +22,7 @@ using(var scope = app.Services.CreateScope())
     DataSeeder.Initialize(services);
 }
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

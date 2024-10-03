@@ -17,16 +17,16 @@ namespace apiPrueba.src.Data
                 var services = scope.ServiceProvider;
                 var context = services.GetRequiredService<ApplicacionDBController>();
                 var existingRuts = new HashSet<string>();
-                if (!context.usuario.Any())
+                if (!context.usuarios.Any())
                 {
                     var userFaker = new Faker<Usuario>()
-                        .RuleFor(u => u.Nombre, f => f.Person.FirstName)
+                        .RuleFor(u => u.Nombre, f => f.Person.FullName)
                         .RuleFor(u => u.RUT, f => int.Parse(GenerateRut(f, existingRuts)))
                         .RuleFor(u => u.email, f => f.Person.Email)
                         .RuleFor(u => u.genero, f => f.PickRandom("M", "F"))
                         .RuleFor(u => u.fechaNacimiento, f => f.Person.DateOfBirth.ToString("yyyy-MM-dd"));
                     var users = userFaker.Generate(10);
-                    context.usuario.AddRange(users);
+                    context.usuarios.AddRange(users);
                     context.SaveChanges();
                 }
             }

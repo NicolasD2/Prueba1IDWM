@@ -9,7 +9,7 @@ namespace apiPrueba.src.Data
 {
     public class ApplicacionDBController(DbContextOptions dbContextOptions) : DbContext(dbContextOptions)
     {
-        public DbSet<Usuario> usuario { get; set; }
+        public DbSet<Usuario> usuarios { get; set; }
 
     }
 }

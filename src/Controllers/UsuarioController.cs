@@ -21,12 +21,12 @@ namespace apiPrueba.src.Controllers
 
         [HttpGet]
         public IActionResult Get(){
-            var usuario = _context.usuario.ToList();
+            var usuario = _context.usuarios.ToList();
             return Ok(usuario);
         }
         [HttpGet("{id}")]
         public IActionResult GetId(int id){
-            var usuario = _context.usuario.FirstOrDefault(x => x.Id == id);
+            var usuario = _context.usuarios.FirstOrDefault(x => x.Id == id);
             if(usuario == null){
                 return NotFound();
             }
@@ -35,7 +35,7 @@ namespace apiPrueba.src.Controllers
         [HttpPost]
         public IActionResult Post([FromBody] Usuario usuario){
             if(ModelState.IsValid){
-                _context.usuario.Add(usuario);
+                _context.usuarios.Add(usuario);
                 _context.SaveChanges();
                 return Ok();
             }
@@ -43,11 +43,11 @@ namespace apiPrueba.src.Controllers
         }
         [HttpPut("{id}")]
         public IActionResult Put([FromRoute]int id, [FromBody] Usuario usuario){
-            var usuarioDB = _context.usuario.Find(id);
+            var usuarioDB = _context.usuarios.Find(id);
             if(usuarioDB == null){
                 return NotFound();
             }
-            var userToUpdate = _context.usuario.FirstOrDefault(x => x.Id == id);
+            var userToUpdate = _context.usuarios.FirstOrDefault(x => x.Id == id);
             if(userToUpdate == null){
                 return NotFound();
             }
@@ -55,17 +55,17 @@ namespace apiPrueba.src.Controllers
             userToUpdate.RUT = usuario.RUT;
             userToUpdate.email = usuario.email;
             userToUpdate.genero = usuario.genero;
-            _context.usuario.Update(userToUpdate);
+            _context.usuarios.Update(userToUpdate);
             _context.SaveChanges();
             return Ok(userToUpdate);
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id){
-            var usuario = _context.usuario.FirstOrDefault(x=> x.Id == id);
+            var usuario = _context.usuarios.FirstOrDefault(x=> x.Id == id);
             if(usuario == null){
                 return NotFound();
             }
-            _context.usuario.Remove(usuario);
+            _context.usuarios.Remove(usuario);
             _context.SaveChanges();
             return Ok();
         }
